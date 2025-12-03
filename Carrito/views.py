@@ -5,6 +5,7 @@ from .models import Carrito, Cupon
 from Producto.models import Producto
 from DetalleCarrito.models import DetalleCarrito
 from django.contrib.auth.decorators import login_required
+from decimal import Decimal
 
 # --- Función Auxiliar (privada) ---
 @login_required
@@ -34,7 +35,10 @@ def ver_carrito(request):
     carrito.save()
 
     # Lógica de Cupón (se guarda en sesión para persistencia)
-    descuento = request.session.get('descuento_monto', 0)
+    descuento_session = request.session.get('descuento_monto', 0)
+    
+    # Lo convertimos forzosamente a Decimal para poder restarlo
+    descuento = Decimal(str(descuento_session))
     total_con_descuento = total - descuento
 
     return render(request, 'carrito.html', {
