@@ -1,0 +1,93 @@
+/* --- Estilos Generales --- */
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* --- Tarjeta del Formulario --- */
+.login-container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* --- Estilizando lo que genera Django (form.as_p) --- */
+
+/* Django envuelve label e input en un <p>, le quitamos el margen excesivo */
+form p {
+    margin-bottom: 15px;
+    text-align: left; /* Alineamos los textos a la izquierda */
+}
+
+/* Etiquetas (Usuario/Contraseña) */
+form label {
+    display: block; /* Que ocupen su propia línea */
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+/* Inputs (Cajas de texto) */
+form input[type="text"],
+form input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box; /* Para que el padding no rompa el ancho */
+}
+
+form input:focus {
+    border-color: #0d6efd;
+    outline: none;
+}
+
+/* --- Botón --- */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #0d6efd; /* Azul */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0b5ed7;
+}
+
+/* --- Mensaje de Error --- */
+.error-msg {
+    margin-top: 20px;
+    color: #dc3545; /* Rojo */
+    background-color: #f8d7da;
+    border: 1px solid #f5c2c7;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+/* Ocultar textos de ayuda de Django si molestan (opcional) */
+.helptext {
+    display: none;
+}

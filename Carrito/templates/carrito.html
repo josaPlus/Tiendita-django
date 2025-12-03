@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito - Cosillas y algo más</title>
+    <link rel="stylesheet" href="{% static 'carrito.css' %}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a class="brand" href="{% url 'catalogo' %}">cosillas y algo mas</a>
+            
+            <div class="nav-actions">
+                <span>Hola, {{ user.username|default:"Visitante" }}</span>
+                <a href="{% url 'catalogo' %}">Catálogo</a>
+                
+                <div class="cart-btn-wrapper">
+                    <a href="{% url 'ver_carrito' %}" class="btn btn-primary">
+                        Mi Carrito
+                    </a>
+                    {% if request.session.cart_id and request.session.items_count > 0 %}
+                        <span class="badge">{{ request.session.items_count }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert">
+                    <span>{{ message }}</span>
+                    <button class="btn-close" onclick="this.parentElement.style.display='none'">×</button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <h2 style="margin-bottom: 1.5rem;">Tu Carrito de Compras</h2>
+
+        {% if items %}
+        <div class="cart-layout">
+            
+            <div class="cart-left">
+                <div class="cart-table-container">
+                    <table class="cart-table">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Precio</th>
+                                <th>Cantidad</th>
+                                <th>Subtotal</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td>
+                                    <div class="product-info">
+                                        <h4>{{ item.producto.nombre }}</h4>
+                                        <p>{{ item.producto.descripcion }}</p>
+                                    </div>
+                                </td>
+                                <td>${{ item.producto.precio }}</td>
+                                <td>
+                                    <form action="{% url 'actualizar_item' item.id %}" method="POST" class="qty-form">
+                                        {% csrf_token %}
+                                        <input type="number" name="cantidad" value="{{ item.cantidad }}" min="0" max="{{ item.producto.stock }}" class="input-qty">
+                                        <button type="submit" class="btn btn-outline btn-small" title="Actualizar">↻</button>
+                                    </form>
+                                </td>
+                                <td style="font-weight: bold;">${{ item.subtotal }}</td>
+                                <td>
+                                    <a href="{% url 'eliminar_item' item.id %}" class="delete-link" title="Eliminar">🗑️</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <a href="{% url 'catalogo' %}" style="color: var(--primary-color);">← Continuar Comprando</a>
+            </div>
+
+            <div class="cart-right">
+                <div class="summary-card">
+                    <div class="summary-header">
+                        Resumen de Compra
+                    </div>
+                    <div class="summary-body">
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span style="font-weight: bold;">${{ carrito.total }}</span>
+                        </div>
+
+                        <div style="margin-bottom: 1rem;">
+                            <small style="color: var(--text-muted); display: block; margin-bottom: 5px;">Código de descuento</small>
+                            <form action="{% url 'aplicar_cupon' %}" method="POST" class="coupon-form">
+                                {% csrf_token %}
+                                <input type="text" name="codigo" class="coupon-input" placeholder="Ej. ANDRES50">
+                                <button class="btn btn-outline btn-coupon" type="submit">Aplicar</button>
+                            </form>
+                        </div>
+
+                        {% if descuento > 0 %}
+                        <div class="summary-row" style="color: var(--success-color);">
+                            <span>Descuento:</span>
+                            <span>- ${{ descuento }}</span>
+                        </div>
+                        {% endif %}
+
+                        <div class="summary-total">
+                            <span>Total:</span>
+                            <span>${{ total_final }}</span>
+                        </div>
+
+                        <a href="{% url 'checkout' %}" class="btn btn-success">Proceder al Pago</a>
+                    </div>
+                </div>
+            </div>
+
+        </div> {% else %}
+            <div style="text-align: center; padding: 4rem; background: #e9ecef; border-radius: 0.5rem;">
+                <h3>Tu carrito está vacío</h3>
+                <a href="{% url 'catalogo' %}" class="btn btn-primary" style="margin-top: 1rem;">Ir al Catálogo</a>
+            </div>
+        {% endif %}
+
+    </div>
+
+</body>
+</html>

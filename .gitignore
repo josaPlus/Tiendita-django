@@ -1,0 +1,33 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Django ---
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Si usas carpeta media para subidas de usuarios, no se suben al repo
+media/
+
+# Staticfiles generados para producción (tu carpeta fuente 'static' SÍ se sube)
+staticfiles/
+
+# --- Entornos Virtuales (Nombres comunes) ---
+# Es muy importante no subir tu entorno virtual
+env/
+venv/
+.venv/
+.env
+
+# --- Variables de Entorno y Secretos ---
+.env
+.DS_Store
+
+# --- IDEs y Editores de Texto ---
+# VS Code
+.vscode/
+# PyCharm
+.idea/

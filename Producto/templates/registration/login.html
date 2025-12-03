@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de sesión</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'login.css' %}">
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>Bienvenido</h2>
+        <p style="margin-bottom: 20px; color: #666;">Ingresa tus datos para continuar</p>
+
+        <form method="post">
+            {% csrf_token %}
+            
+            {{ form.as_p }}
+            
+            <button type="submit">
+                Iniciar sesión
+            </button>
+        </form>
+        
+        {% if form.errors %}
+            <p class="error-msg">El usuario o la contraseña son incorrectos, intente de nuevo.</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>

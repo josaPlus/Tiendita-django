@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo - Cosillas y algo más</title>
+    <link rel="stylesheet" href="{% static 'catalogo.css' %}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a class="brand" href="{% url 'catalogo' %}">cosillas y algo mas</a>
+
+            <div class="nav-actions">
+                <span>Hola, {{ user.username|default:"Visitante" }}</span>
+
+                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-small">Salir</button>
+                </form>
+
+                <div class="cart-btn-wrapper">
+                    <a href="{% url 'ver_carrito' %}" class="btn btn-primary">
+                        Mi Carrito
+                    </a>
+                    {% if request.session.cart_id and request.session.items_count > 0 %}
+                    <span class="badge">{{ request.session.items_count }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert {{ message.tags }}">
+            <span>{{ message }}</span>
+            <button class="btn-close" onclick="this.parentElement.style.display='none'">×</button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <h2 style="margin-bottom: 1.5rem;">Catálogo de Productos</h2>
+
+        <div class="product-grid">
+            {% for producto in productos %}
+            <div class="product-card">
+                <div class="card-image-placeholder">
+                    Imagen Producto
+                </div>
+
+                <div class="card-body">
+                    <h3 class="card-title">{{ producto.nombre }}</h3>
+                    <p class="card-desc">{{ producto.descripcion }}</p>
+
+                    <div class="card-meta">
+                        <span class="price">${{ producto.precio }}</span>
+                        <span class="stock-badge">Stock: {{ producto.stock }}</span>
+                    </div>
+
+                    <form action="{% url 'agregar_item' producto.id %}" method="POST" class="add-form">
+                        {% csrf_token %}
+                        <input type="number" name="cantidad" value="1" min="1" max="{{ producto.stock }}"
+                            class="input-qty">
+                        <button type="submit" class="btn btn-primary btn-full">Agregar</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</body>
+
+</html>
