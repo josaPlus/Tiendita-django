@@ -9,8 +9,11 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -78,13 +81,13 @@ WSGI_APPLICATION = 'Tienda.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'defaultdb',                                         # Tu campo "database"
-        'USER': 'doadmin',                                           # Tu campo "username"
-        'PASSWORD': 'AVNS_Tfyr882cYgNERMsO7wB',                      # Tu campo "password"
-        'HOST': 'db-postgresql-nyc3-43646-do-user-22388216-0.l.db.ondigitalocean.com', # Tu campo "host"
-        'PORT': '25060',                                             # Tu campo "port"
+        'NAME': os.getenv('DB_NAME'),       # <--- Lee del archivo .env
+        'USER': os.getenv('DB_USER'),       # <--- Lee del archivo .env
+        'PASSWORD': os.getenv('DB_PASSWORD'), # <--- Lee del archivo .env
+        'HOST': os.getenv('DB_HOST'),       # <--- Lee del archivo .env
+        'PORT': os.getenv('DB_PORT'),       # <--- Lee del archivo .env
         'OPTIONS': {
-            'sslmode': 'require',  # IMPORTANTE: DigitalOcean exige SSL
+            'sslmode': 'require',
         },
     }
 }
