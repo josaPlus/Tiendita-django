@@ -5,6 +5,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),    
     path('accounts/', include('django.contrib.auth.urls')),
     # Tus rutas de la tienda
-    path('carrito/', include('Carrito.urls')), 
-    path('', include('Producto.urls')), 
+    path('carrito/', include('Carrito.urls')),
 ]
