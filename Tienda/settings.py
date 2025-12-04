@@ -79,11 +79,11 @@ WSGI_APPLICATION = 'Tienda.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),       # <--- Lee del archivo .env
-        'USER': os.getenv('DB_USER'),       # <--- Lee del archivo .env
-        'PASSWORD': os.getenv('DB_PASSWORD'), # <--- Lee del archivo .env
-        'HOST': os.getenv('DB_HOST'),       # <--- Lee del archivo .env
-        'PORT': os.getenv('DB_PORT'),       # <--- Lee del archivo .env
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
         'OPTIONS': {
             'sslmode': 'require',
         },

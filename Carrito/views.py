@@ -134,6 +134,10 @@ def aplicar_cupon(request):
 
 @login_required
 def checkout(request):
+    # Si intentan entrar por la URL (GET), los devolvemos al carrito.
+    if request.method != 'POST':
+        return redirect('ver_carrito')
+
     carrito = _get_carrito(request)
     items = carrito.detalles.all()
 
@@ -163,8 +167,7 @@ def checkout(request):
     if 'descuento_monto' in request.session:
         del request.session['descuento_monto']
 
-    # --- CAMBIO AQUÍ ---
-    # En vez de buscar el HTML que no existe, mandamos mensaje y redirigimos
+    # Mensaje de éxito y redirección
     messages.success(request, "¡Compra exitosa! Gracias por tu preferencia.")
     return redirect('catalogo')
 
