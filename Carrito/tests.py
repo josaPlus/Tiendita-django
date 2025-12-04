@@ -76,7 +76,6 @@ class GestionCarritoTest(TestCase):
 # CASO DE PRUEBA 2: REGLAS DE NEGOCIO Y CHECKOUT
 
 class ReglasNegocioTest(TestCase):
-    """Pruebas Unitarias para CU-03: Aplicación de Cupón y CU-04: Checkout."""
 
     def setUp(self):
         self.user = User.objects.create_user(username='negocio_tester', password='password123')
@@ -100,42 +99,35 @@ class ReglasNegocioTest(TestCase):
         self.url_aplicar_cupon = reverse('aplicar_cupon')
         self.url_checkout = reverse('checkout')
 
-    ## 🎯 Prueba Unitaria 1: Aplicación Correcta de Cupón (CU-03)
+    #  2.1: Aplicación Correcta de Cupón (CU-03)
     def test_aplicacion_cupon_exitosa(self):
         # 1. Aplicar Cupón
         response = self.client.post(self.url_aplicar_cupon, {'codigo': 'RUTH15'})
         
-        # **Verificación 1:** Se espera redirección a 'ver_carrito'
         self.assertRedirects(response, reverse('ver_carrito'))
         
-        # 2. Recalcular total con descuento (15% de 250 = 37.50)
         total_base = Decimal('250.00')
         monto_descuento_esperado = Decimal('37.50')
-        total_final_esperado = total_base - monto_descuento_esperado # 212.50
+        total_final_esperado = total_base - monto_descuento_esperado 
         
-        # **Verificación 2:** Se verifica que el monto de descuento esté en la sesión
         self.assertEqual(self.client.session.get('descuento_monto'), float(monto_descuento_esperado))
         
-        # **Verificación 3:** Se verifica que la vista muestre el total final correcto
         response_carrito = self.client.get(reverse('ver_carrito'))
         self.assertEqual(response_carrito.context['total_final'], total_final_esperado)
 
-    ## 🎯 Prueba Unitaria 2: Cupón Inválido (Flujo Alternativo CU-03)
+    # 2.2: Cupón Inválido (Flujo Alternativo CU-03)
     def test_aplicacion_cupon_invalido(self):
         # Intentar aplicar cupón expirado
         response = self.client.post(self.url_aplicar_cupon, {'codigo': 'EXPIRADO'})
         
-        # **Verificación 1:** Se espera redirección a 'ver_carrito'
         self.assertRedirects(response, reverse('ver_carrito'))
         
-        # **Verificación 2:** Se verifica que el mensaje de error de cupón aparezca
         messages = list(get_messages(response.wsgi_request))
         self.assertIn("Código de descuento inválido o expirado.", [m.message for m in messages])
         
-        # **Verificación 3:** El descuento en sesión debe ser 0
         self.assertEqual(self.client.session.get('descuento_monto', 0), 0)
 
-    ## 🎯 Prueba Unitaria 3: Procesamiento de Checkout y Actualización de Stock (CU-04)
+    # 2.3: Procesamiento de Checkout y Actualización de Stock (CU-04)
     def test_procesamiento_checkout(self):
         # 1. CORRECCIÓN APLICADA: Obtener el objeto Carrito activo antes del checkout
         carrito_activo = Carrito.objects.get(pagado=False) 
@@ -143,13 +135,10 @@ class ReglasNegocioTest(TestCase):
         # 2. Ejecutar checkout
         response = self.client.post(self.url_checkout)
         
-        # **Verificación 1:** El carrito debe quedar marcado como 'pagado=True'
         carrito_activo.refresh_from_db() 
         self.assertTrue(carrito_activo.pagado) 
 
-        # **Verificación 2:** Se verifica que el stock de Prod X se haya restado (10 - 2 = 8)
         prod_X_final = Producto.objects.get(id=self.prod_X.id)
         self.assertEqual(prod_X_final.stock, 8)
         
-        # **Verificación 3:** Se verifica que el ID del carrito se haya eliminado de la sesión
         self.assertNotIn('cart_id', self.client.session)
